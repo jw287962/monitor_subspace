@@ -22,12 +22,17 @@ function main {
 	#
 	$_alert_stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
 	####
+	$_allOutput = ""
+
+	
+	$_testTelegram = 'https://api.telegram.org/bot6373284542:AAGuyLY2ctFSPdVz0iHcT3YZwrTZnpnd50Y/sendMessage'
+	$_chat_id = ""
 	Clear-Host
 	
 	try {
 		while ($true) {
+			
 			Clear-Host
-
 			$_b_first_time = $True
 			$_line_spacer_color = "gray"
 			$_farmer_header_color = "cyan"
@@ -92,17 +97,26 @@ function main {
 				$_context_task = $_http_listener.GetContextAsync()
 				#$_context_task = $_http_listener.GetContext()
 			}
-
 			#Write-Host "_b_console_disabled: " $_b_console_disabled
 			#Write data to appropriate destination
+
+			
 			if ($_b_console_disabled) {
 				$_b_request_processed = fInvokeHttpRequestListener  $_farmers_ip_arr $_context_task $_alert_stopwatch
 				#$_http_listener.Close()	
 			}
 			else{
 				fWriteDataToConsole $_farmers_ip_arr $_alert_stopwatch
+
+				
+				
 				fStartCountdownTimer $refreshTimeScaleInSeconds
+
+				
 			}
+
+			
+		
 			
 			###### Auto refresh
 			$HoursElapsed = $Stopwatch.Elapsed.TotalHours
@@ -223,7 +237,7 @@ function fPingMetricsUrl ([string]$ioUrl) {
 		$_response = ""
 		$_fullUrl = "http://" + $ioUrl + "/metrics"
 		try {
-			$farmerObj = Invoke-RestMethod -Method 'GET' -uri $_fullUrl  -TimeoutSec 20
+			$farmerObj = Invoke-RestMethod -Method 'GET' -uri $_fullUrl
 			if ($farmerObj) {
 				$_response = $farmerObj.toString()
 			}
@@ -532,15 +546,41 @@ function fGetDiskSectorPerformance ([array]$_io_farmer_metrics_arr) {
 
 	#return $_resp_sector_perf_arr
 	#return $_resp_rewards_arr
+
+
+
 	return $_resp_disk_metrics_arr
 }
 
 function fSendDiscordNotification ([string]$ioUrl, [string]$ioMsg) {
 	$JSON = @{ "content" = $ioMsg; } | convertto-json
-	Invoke-WebRequest -uri $ioUrl -Method POST -Body $JSON -Headers @{'Content-Type' = 'application/json'}
+	Invoke-WebRequest -uri $ioUrl -Method POST -Body $JSON -Headers @{'Content-Type' = 'application/json'} 
+
 }
 
-function fGetProcessState ([string]$_io_process_type, [string]$_io_host_ip, [string]$_io_hostname, [string]$_io_alert_url, [object]$_io_alert_sw) {
+function fSendTelegramNotification ([string]$ioUrl, [string]$ioMsg) {
+	# $JSON = @{ "content" = $ioMsg; } | convertto-json
+	 $TelegramData = @{
+        chat_id = $_chat_id
+        text = $ioMsg
+    } | convertto-json
+		# Start-Sleep -Seconds 3
+	# $response = 
+
+	try{
+
+	$response = Invoke-WebRequest -Uri $ioUrl -Method Post -Body $TelegramData -ContentType "application/json" 
+	if ($response.StatusCode -eq 200) {
+        Write-Host "Telegram Request was successful: $($response.StatusDescription)"
+    } else {
+        Write-Host "Telegram Request failed: $($response)"
+    }
+	}catch{
+		Write-Host "An error occurred: $_"
+	}
+	}
+
+function fGetProcessState ([string]$_io_process_type, [string]$_io_host_ip, [string]$_io_hostname, [string]$_io_alert_url, [object]$_io_alert_sw, [string]$_url_telegram) {
 	$_resp_process_state_arr = [System.Collections.ArrayList]@()
 
 	$_b_process_running_state = $False
@@ -550,7 +590,8 @@ function fGetProcessState ([string]$_io_process_type, [string]$_io_host_ip, [str
 	if ($_resp -eq "") {
 		$_alert_text = $_io_process_type + " status: Stopped, Hostname:" + $_io_hostname
 		try {
-			fSendDiscordNotification $_io_alert_url $_alert_text
+			# fSendDiscordNotification $_io_alert_url $_alert_text
+			fSendTelegramNotification $_url_telegram $_alert_text
 		}
 		catch {}
 		#
@@ -579,15 +620,25 @@ function fCheckGitNewVersion {
 
 function fWriteDataToConsole ([array]$_io_farmers_ip_arr, [object]$_io_stopwatch) {
 	$_url_discord = ""
+	$_url_telegram = ""
+	
 	for ($arrPos = 0; $arrPos -lt $_io_farmers_ip_arr.Count; $arrPos++)
 	{
+	
 		$_farmer_metrics_raw = ""
 		$_node_metrics_raw = ""
 		[array]$_process_state_arr = $null
 		if ($_io_farmers_ip_arr[$arrPos].toString().Trim(' ') -ne "" -and $_io_farmers_ip_arr[$arrPos].toString().IndexOf("#") -lt 0) {
 			$_config = $_io_farmers_ip_arr[$arrPos].toString().split(":").Trim(" ")
 			$_process_type = $_config[0].toString()
-			if ($_process_type.toLower().IndexOf("discord") -ge 0) { $_url_discord = "https:" + $_config[2].toString() }
+
+			if ($_process_type.toLower().IndexOf("chat_id") -ge 0) { $_chat_id = [Double]$_config[1]
+			}
+
+			if ($_process_type.toLower().IndexOf("telegram") -ge 0) { $_url_telegram = "https:" + $_config[2].toString() + ":" +  $_config[3].toString()
+			}
+			if ($_process_type.toLower().IndexOf("discord") -ge 0) { $_url_discord = "https:" + $_config[2].toString()
+				}
 			elseif ($_process_type.toLower() -eq "node" -or $_process_type.toLower() -eq "farmer") { 
 				$_host_ip = $_config[1].toString()
 				$_host_port = $_config[2].toString()
@@ -647,6 +698,8 @@ function fWriteDataToConsole ([array]$_io_farmers_ip_arr, [object]$_io_stopwatch
 				Write-Host ", " -nonewline
 				Write-Host "Hostname: " -nonewline -ForegroundColor $_farmer_header_color
 				Write-Host $_hostname -nonewline -ForegroundColor $_farmer_header_data_color
+				
+
 				if ($_process_type.toLower() -eq "node") {
 					Write-Host ", " -nonewline
 					Write-Host "Synced: " -nonewline -ForegroundColor $_farmer_header_color
@@ -706,6 +759,9 @@ function fWriteDataToConsole ([array]$_io_farmers_ip_arr, [object]$_io_stopwatch
 			$_disk_plots_completed_arr = $_disk_metrics_arr[0].PlotsCompleted
 			$_disk_plots_remaining_arr = $_disk_metrics_arr[0].PlotsRemaining
 
+			
+
+		
 			# Write uptime information to console
 			foreach ($_disk_sector_performance_obj in $_disk_sector_performance_arr)
 			{
@@ -724,23 +780,58 @@ function fWriteDataToConsole ([array]$_io_farmers_ip_arr, [object]$_io_stopwatch
 						
 						$_uptime = fGetElapsedTime $_disk_sector_performance_obj
 						$_uptime_disp = $_uptime.days.ToString()+"d "+$_uptime.hours.ToString()+"h "+$_uptime.minutes.ToString()+"m "+$_uptime.seconds.ToString()+"s"
+						$_Output = " `n"
 
-						Write-Host ", " -nonewline
-						Write-Host "Uptime: " -nonewline -ForegroundColor $_farmer_header_color
-						Write-Host $_uptime_disp -ForegroundColor $_farmer_header_data_color
-						#Write-Host ", " -nonewline
-						Write-Host "Sectors/Hour (avg): " -nonewline 
-						Write-Host $_avg_sectors_per_hour.toString() -nonewline -ForegroundColor $_farmer_header_data_color
-						Write-Host ", " -nonewline
-						Write-Host "Minutes/Sector (avg): " -nonewline
-						Write-Host  $_avg_minutes_per_sector.toString() -nonewline -ForegroundColor $_farmer_header_data_color
-						Write-Host ", " -nonewline
-						Write-Host "Rewards: " -nonewline
-						Write-Host  $_disk_sector_performance_obj.TotalRewards.toString() -ForegroundColor $_farmer_header_data_color
+
+						Write-Host "test $($arrpos) "
+
+
+						switch ($arrPos) {
+							10 {
+								# If counter is 0, add "AMD 7950X" to $_Output
+								$_Output += "AMD 7950X"
+								break
+							}
+							11 {
+								$_Output += "ROG STRIX Jas"
+								break
+							}
+							# You can add more cases as needed
+							default {
+								$_Output += "Windows RogStrix"
+								break
+								# Default case if the counter is not 0
+								# You can add additional logic here if needed
+								break
+							}
+						}
+						
+						$_Output += " Hostname: $_hostname"
+						$_Output += ", `n"
+						$_Output += "Uptime: "
+						$_Output += $_uptime_disp
+						$_Output += ", "
+						$_Output += "Sectors/Hour (avg): "
+						$_Output += $_avg_sectors_per_hour.ToString()
+						$_Output += ", "
+						$_Output += "Minutes/Sector (avg): "
+						$_Output += $_avg_minutes_per_sector.ToString()
+						$_Output += ", "
+						$_Output += "Rewards: "
+						$_Output += $_disk_sector_performance_obj.TotalRewards.ToString()
+						
+
+						$_allOutput += "$_Output"
+
+						Write-Host $_Output
+						fSendTelegramNotification $_testTelegram $_Output
+						
 						break
 					}
+					
 				}
 			}
+			# Write-Host  $_allOutput
 
 			$_total_spacer_length = ("--------------------------------------------------------------------------------------------------------").Length
 			$_spacer_length = $_total_spacer_length
@@ -1040,6 +1131,9 @@ function fWriteDataToConsole ([array]$_io_farmers_ip_arr, [object]$_io_stopwatch
 	$_label_spacer = fBuildDynamicSpacer $_spacer_length "-"
 
 	Write-Host $_label_spacer -ForegroundColor $_line_spacer_color
+
+
+	# fSendTelegramNotification _testTelegram $_allOutput
 	
 	# display latest github version info
 	$_gitVersionDisp = " - "
@@ -1102,6 +1196,9 @@ function fBuildHtml ([array]$_io_farmers_ip_arr, [object]$_io_alert_swatch) {
 		if ($_io_farmers_ip_arr[$arrPos].toString().Trim(' ') -ne "" -and $_io_farmers_ip_arr[$arrPos].toString().IndexOf("#") -lt 0) {
 			$_config = $_io_farmers_ip_arr[$arrPos].toString().split(":").Trim(" ")
 			$_process_type = $_config[0].toString()
+
+
+			if ($_process_type.toLower().IndexOf("chat_id") -ge 0) { $_chat_id = [Double]$_config }
 			if ($_process_type.toLower().IndexOf("discord") -ge 0) { $_url_discord = "https:" + $_config[2].toString() }
 			elseif ($_process_type.toLower() -eq "node" -or $_process_type.toLower() -eq "farmer") { 
 				$_host_ip = $_config[1].toString()
@@ -1125,7 +1222,7 @@ function fBuildHtml ([array]$_io_farmers_ip_arr, [object]$_io_alert_swatch) {
 				# STOP COMMENT - Remove the # in front of the next 1 line directly below this line, this will display IP in display
 				$_hostname = $_host_ip
 
-				$_process_state_arr = fGetProcessState $_process_type $_host_url $_hostname $_url_discord $_io_alert_swatch
+				$_process_state_arr = fGetProcessState $_process_type $_host_url $_hostname $_url_discord $_io_alert_swatch $_url_telegram
 				$_b_process_running_ok = $_process_state_arr[1]
 				
 				if ($_process_type.toLower() -eq "farmer") {
