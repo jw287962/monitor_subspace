@@ -571,7 +571,7 @@ function fSendTelegramNotification ([string]$ioUrl, [string]$ioMsg) {
 
 	$response = Invoke-WebRequest -Uri $ioUrl -Method Post -Body $TelegramData -ContentType "application/json" 
 	if ($response.StatusCode -eq 200) {
-        Write-Host "Telegram Request was successful: $($response.StatusDescription)"
+        # Write-Host "Telegram Request was successful: $($response.StatusDescription)"
     } else {
         Write-Host "Telegram Request failed: $($response)"
     }
@@ -780,10 +780,7 @@ function fWriteDataToConsole ([array]$_io_farmers_ip_arr, [object]$_io_stopwatch
 						
 						$_uptime = fGetElapsedTime $_disk_sector_performance_obj
 						$_uptime_disp = $_uptime.days.ToString()+"d "+$_uptime.hours.ToString()+"h "+$_uptime.minutes.ToString()+"m "+$_uptime.seconds.ToString()+"s"
-						$_Output = " `n"
-
-
-						Write-Host "test $($arrpos) "
+						$_Output = ""
 
 
 						switch ($arrPos) {
