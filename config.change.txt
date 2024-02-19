@@ -1,6 +1,11 @@
 #### start of config file
 #### sample config below contains user defined environment values
 #### please don't change format
+#------------------------------------------------------------------------------------------------------------------
+# RENAME FILE TO config.txt
+
+#------------------------------------------------------------------------------------------------------------------
+
 
 #------------------------------------------------------------------------------------------------------------------
 # http endpoint set-up (use Y-Enabled, N-Disabled for enable-api setting). "N" is default
