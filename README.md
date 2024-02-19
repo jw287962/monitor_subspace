@@ -53,11 +53,16 @@ To launch save the ps1 and config file in same folder on a local computer, chang
 
 
 **FORKED CHANGES:**
-	- I changed config to use '=' sign between key value pairs so easier and cleaner due to frequent ':' in URL
-	- WEBHOOK is untested adjusted the $_api_host_url variable that relied on ':' rather than '='
-	- send telegram notification on refresh as well 
-		- sends for all farmers:
-		 Uptime: , Sectors/Hour (avg): , Minutes/Sector (avg): , Rewards: 
+  - TELEGRAM notification for all farmer summary on refresh
+	>- **sends (of all farmers):**
+		>>- Uptime: 
+		>>- Sectors/Hour (avg)
+		>>- Minutes/Sector (avg)
+		>>- Rewards: 
+  - Key Value Pairs denoted with '=' instead of ':' for config.txt 
+  	>- IE: Node: 0.0.0.0/0 --> Node= 0.0.0.0/0
+  - WEBHOOK is untested. 
+
 	
 
 >*** Forked Discord ID: jaxeun
