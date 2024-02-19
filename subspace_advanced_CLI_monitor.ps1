@@ -799,20 +799,14 @@ function fWriteDataToConsole ([array]$_io_farmers_ip_arr, [object]$_io_stopwatch
 								break
 							}
 						}
-						$_Output = ""
-						# Initialize the HTML string
+						$_Output = ", `n"
+						$_Output += "Uptime: $($_uptime_disp)"
 						$_Output += ", "
-						$_Output += "Uptime: "
-						$_Output += $_uptime_disp
+						$_Output += "Sectors/Hour (avg): $($_avg_sectors_per_hour.ToString())"
 						$_Output += ", "
-						$_Output += "Sectors/Hour (avg): "
-						$_Output += $_avg_sectors_per_hour.ToString()
+						$_Output += "Minutes/Sector (avg): $($_avg_minutes_per_sector.ToString())"
 						$_Output += ", "
-						$_Output += "Minutes/Sector (avg): "
-						$_Output += $_avg_minutes_per_sector.ToString()
-						$_Output += ", "
-						$_Output += "Rewards: "
-						$_Output += $_disk_sector_performance_obj.TotalRewards.ToString()
+						$_Output += "Rewards: $($_disk_sector_performance_obj.TotalRewards.ToString())"
 
 						# Append each line with HTML formatting
 						$_OutputHTML += "`n<b>Uptime:</b> <code style='color:blue;'>$($_uptime_disp)</code>, "
