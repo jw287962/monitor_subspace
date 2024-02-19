@@ -61,7 +61,7 @@ To launch save the ps1 and config file in same folder on a local computer, chang
 		>>- Rewards: 
   - Key Value Pairs denoted with '=' instead of ':' for config.txt 
   	>- IE: Node: 0.0.0.0/0 --> Node= 0.0.0.0/0
-  - WEBHOOK is untested. 
+  - APIMODE is untested
 
 	
 
