@@ -75,13 +75,12 @@ function main {
 					#### create listener object for later use
 					# create a listener for inbound http request
 					$_api_host_arr = $_api_host.split("=").Trim(" ")
-					$_api_host_ip = $_api_host_arr[0]
-					$_api_host_port = $_api_host_arr[1]
+					# $_api_host_ip = $_api_host_arr[0]
+					# $_api_host_port = $_api_host_arr[1]
 					
-					#Write-Host ("_api_host_ip: " + $_api_host_ip)
-					#Write-Host ("_api_host_port: " + $_api_host_port)
-					$_api_host_url = $_api_host_ip + ":" + $_api_host_port
-					if ($_api_host_ip -eq "0.0.0.0" ){ $_api_host_url = "*:" + $_api_host_port }
+					# Should work with just that due to split on '='
+					$_api_host_url = $_api_host_arr
+					# if ($_api_host_ip -eq "0.0.0.0" ){ $_api_host_url = "*:" + $_api_host_port }
 					
 					$_url_prefix = "http://" + $_api_host_url + "/"
 					$_url_prefix_listener = $_url_prefix.toString().replace("http://127.0.0.1", "http://localhost")
@@ -779,14 +778,14 @@ function fWriteDataToConsole ([array]$_io_farmers_ip_arr, [object]$_io_stopwatch
 						
 
 
-						$_OutputHTML = "`n`n<pre>"
+						$_OutputHTML = "`n`n"
 						switch ($arrPos) {
-							10 {
+							9 {
 								# If counter is 0, add "AMD 7950X" to $_Output
 								$_OutputHTML += "AMD 7950X"
 								break
 							}
-							11 {
+							10 {
 								$_OutputHTML += "ROG STRIX Jas"
 								break
 							}
@@ -809,13 +808,13 @@ function fWriteDataToConsole ([array]$_io_farmers_ip_arr, [object]$_io_stopwatch
 						$_Output += "Rewards: $($_disk_sector_performance_obj.TotalRewards.ToString())"
 
 						# Append each line with HTML formatting
-						$_OutputHTML += "`n<b>Uptime:</b> <code style='color:blue;'>$($_uptime_disp)</code>, "
-						$_OutputHTML += "`n<b>Sectors/Hour (avg):</b> <code style='color:blue;'>$($_avg_sectors_per_hour)</code>, "
-						$_OutputHTML += "`n<b>Minutes/Sector (avg):</b> <code style='color:blue;'>$($_avg_minutes_per_sector)</code>, "
-						$_OutputHTML += "`n<b>Rewards:</b> <code style='color:blue;'>$($_disk_sector_performance_obj.TotalRewards)</code>"
+						$_OutputHTML += ", <b>$($_uptime_disp)</b> Uptime, "
+						$_OutputHTML += "`n <b>$($_avg_sectors_per_hour)</b> Sectors/Hour (avg), "
+						$_OutputHTML += "`n <b>$($_avg_minutes_per_sector)</b> Minutes/Sector (avg), "
+						$_OutputHTML += "`n <b>$($_disk_sector_performance_obj.TotalRewards)</b> Total Rewards"
 
 						# Close the HTML pre tag
-						$_OutputHTML += "</pre>"
+						$_OutputHTML += ""
 
 						# Output the HTML string
 						$_allOutput += "$_OutputHTML"
