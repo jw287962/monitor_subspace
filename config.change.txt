@@ -12,38 +12,40 @@
 # API endpoint to use on web browser http://ip:port/summary (example http://127.0.0.1:15004/summary)
 #------------------------------------------------------------------------------------------------------------------
 
-Enable-API: N
-#Enable-API: Y
+Enable-API= N
+#Enable-API= Y
 
-API-host: 192.168.2.251:15004
-#API-host: 127.0.0.1:15004
+API-host= 192.168.2.251:15004
+#API-host= 127.0.0.1:15004
 
 #------------------------------------------------------------------------------------------------------------------
 # discord webhook - change to use your own
+# https://api.telegram.org/bot<YourBOTToken>/getUpdates to get CHATID if you don't know 
 #------------------------------------------------------------------------------------------------------------------
 
-Discord-url : https://discord.com/api/webhooks/0000000000000000000/1RyMXertEPetP7YsTH298..............
-
+Discord-url= https://discord.com/api/webhooks/0000000000000000000/1RyMXertEPetP7YsTH298..............
+Telegram= https://api.telegram.org/bot<TOKEN>/sendMessage
+Chat_ID= 000010101
 #------------------------------------------------------------------------------------------------------------------
 ## adjust screen refresh time as apppropriate (if 0 is provided the value will default to 30 seconds)
 #------------------------------------------------------------------------------------------------------------------
 
-Auto-refresh(seconds) : 30
+Auto-refresh(seconds)= 30
 
 #------------------------------------------------------------------------------------------------------------------
 ## insert a new line for each node like shown in sample below
 ## change IP and port to match your node set-up
 #------------------------------------------------------------------------------------------------------------------
 
-Node: 192.168.2.203:19595
+Node= 192.168.2.203:19595
 
 #------------------------------------------------------------------------------------------------------------------
 ## insert a new line for each farmer like shown in sample below
 ## change IP and port to match your farmer set-up
 #------------------------------------------------------------------------------------------------------------------
 
-Farmer : 192.168.2.251:18585
-Farmer : 192.168.2.203:18585
-Farmer : 192.168.2.105:18585
+Farmer= 192.168.2.251:18585
+Farmer= 192.168.2.203:18585
+Farmer= 192.168.2.105:18585
 
 ## end of config file
