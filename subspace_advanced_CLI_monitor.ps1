@@ -24,7 +24,7 @@ function main {
 	####
 	$_allOutput = ""
 
-	
+	$_total_spacer_length = $_total_spacer_length = ("-----------------------------------------------------------------------------------------").Length
 	$_url_telegram = ""
 	$_chat_id = ""
 	Clear-Host
@@ -660,7 +660,7 @@ function fWriteDataToConsole ([array]$_io_farmers_ip_arr, [object]$_io_stopwatch
 				
 				$_node_peers_connected = 0
 				if ($_process_type.toLower() -eq "farmer") {
-					$_total_spacer_length = ("--------------------------------------------------------------------------------------------------------").Length
+					# $_total_spacer_length = ("--------------------------------------------------------------------------------------------------------").Length
 					$_spacer_length = $_total_spacer_length
 					$_label_spacer = fBuildDynamicSpacer $_spacer_length "-"
 					Write-Host $_label_spacer -ForegroundColor $_line_spacer_color
@@ -731,13 +731,13 @@ function fWriteDataToConsole ([array]$_io_farmers_ip_arr, [object]$_io_stopwatch
 			#
 			$_label_hostname = "Hostname"
 			$_label_diskid = "Disk Id"
-			$_label_size = "Size     "
-			$_label_percent_complete = "% Complete"
-			$_label_eta = "ETA       "
-			$_label_sectors_per_hour = "Sectors/Hour"
-			$_label_minutes_per_sectors = "Minutes/Sector"
-			$_label_rewards = "Rewards"
-			$_label_misses = "Misses"
+			$_label_size = "Size    "
+			$_label_percent_complete = "% Comp."
+			$_label_eta = "ETA     "
+			$_label_sectors_per_hour = "Sectors/Hr"
+			$_label_minutes_per_sectors = "Min/Sector"
+			$_label_rewards = "Reward"
+			$_label_misses = "Miss"
 			$_spacer = " "
 			$_total_header_length = $_label_size.Length + $_label_percent_complete.Length + $_label_eta.Length + $_label_sectors_per_hour.Length + $_label_minutes_per_sectors.Length + $_label_rewards.Length + $_label_misses.Length
 			$_total_header_labels = 8
@@ -832,7 +832,7 @@ function fWriteDataToConsole ([array]$_io_farmers_ip_arr, [object]$_io_stopwatch
 				}
 			}
 			
-			$_total_spacer_length = ("--------------------------------------------------------------------------------------------------------").Length
+			# $_total_spacer_length = ("--------------------------------------------------------------------------------------------------------").Length
 			$_spacer_length = $_total_spacer_length
 			$_label_spacer = fBuildDynamicSpacer $_spacer_length "-"
 			
@@ -848,7 +848,9 @@ function fWriteDataToConsole ([array]$_io_farmers_ip_arr, [object]$_io_stopwatch
 					if ($_disk_UUId_obj -ne $null) {
 						$_total_spacer_length = $_disk_UUId_obj.Id.toString().Length + $_total_header_length + $_total_header_labels + 2 	# 1 for leading and 1 for trailing
 					}
-					else {$_total_spacer_length = ("------------------------------------------------------------------------").Length}
+					else {
+						# $_total_spacer_length = ("------------------------------------------------------------------------").Length
+					}
 					$_spacer_length = $_total_spacer_length
 					$_label_spacer = fBuildDynamicSpacer $_spacer_length "-"
 					if ($_b_first_time -eq $True) {
@@ -980,7 +982,7 @@ function fWriteDataToConsole ([array]$_io_farmers_ip_arr, [object]$_io_stopwatch
 						}
 						if ($_minutes_per_sector_data_disp -ne "-") {
 							$_eta = [math]::Round((([double]($_minutes_per_sector_data_disp) * $_reminaing_sectors)) / (60 * 24), 2)
-							$_eta_disp = $_eta.toString() + " days"
+							$_eta_disp = $_eta.toString() + "Days"
 						}
 						
 						$_spacer_length = 1
@@ -1231,7 +1233,7 @@ function fBuildHtml ([array]$_io_farmers_ip_arr, [object]$_io_alert_swatch) {
 				$_b_process_running_ok = $_process_state_arr[1]
 				
 				if ($_process_type.toLower() -eq "farmer") {
-					$_total_spacer_length = ("------------------------------------------------------------------------------").Length
+					# $_total_spacer_length = ("------------------------------------------------------------------------------").Length
 					$_spacer_length = $_total_spacer_length
 					$_label_spacer = fBuildDynamicSpacer $_spacer_length "-"
 					$_html += "<br><br>"
@@ -1362,7 +1364,7 @@ function fBuildHtml ([array]$_io_farmers_ip_arr, [object]$_io_alert_swatch) {
 				}
 			}
 
-			$_total_spacer_length = ("--------------------------------------------------------------------------------------------------------").Length
+			# $_total_spacer_length = ("--------------------------------------------------------------------------------------------------------").Length
 			$_spacer_length = $_total_spacer_length
 			$_label_spacer = fBuildDynamicSpacer $_spacer_length "-"
 			
@@ -1379,7 +1381,10 @@ function fBuildHtml ([array]$_io_farmers_ip_arr, [object]$_io_alert_swatch) {
 					if ($_disk_UUId_obj -ne $null) {
 						$_total_spacer_length = $_disk_UUId_obj.Id.toString().Length + $_total_header_length + $_total_header_labels + 2 	# 1 for leading and 1 for trailing
 					}
-					else {$_total_spacer_length = ("------------------------------------------------------------------------").Length}
+					else {
+						# $_total_spacer_length = ("------------------------------------------------------------------------").Length
+						
+						}
 					$_spacer_length = $_total_spacer_length
 					$_label_spacer = fBuildDynamicSpacer $_spacer_length "-"
 					if ($_b_first_time -eq $True) {
