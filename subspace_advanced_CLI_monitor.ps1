@@ -814,7 +814,7 @@ function fWriteDataToConsole ([array]$_io_farmers_ip_arr, [object]$_io_stopwatch
 						$_allOutput += "$_OutputHTML"
 
 						# FOR PWSH CLI
-						$_Output = ", `n"
+						$_Output = ""
 						$_Output += "Uptime: $($_uptime_disp)"
 						$_Output += ", "
 						$_Output += "Sectors/Hour (avg): $($_avg_sectors_per_hour.ToString())"
@@ -1147,7 +1147,6 @@ function fWriteDataToConsole ([array]$_io_farmers_ip_arr, [object]$_io_stopwatch
 		$_gitVersionDispColor = $_html_green
 	}
 
-	echo `n
 	Write-Host "Latest github version : " -nonewline
 	Write-Host "$($_gitVersionDisp)" -nonewline -ForegroundColor $_gitVersionDispColor
 	
@@ -1618,7 +1617,7 @@ function fBuildHtml ([array]$_io_farmers_ip_arr, [object]$_io_alert_swatch) {
 	else {$_spacer_length = ("------------------------------------------------------------------------").Length}
 	$_label_spacer = fBuildDynamicSpacer $_spacer_length "-"
 
-	# display latest github version info
+	# display output github version info
 	$_gitVersionDisp = " - "
 	$_gitVersionDispColor = $_html_red
 	if ($null -ne $gitVersion) {
