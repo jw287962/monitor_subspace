@@ -754,8 +754,8 @@ function fWriteDataToConsole ([array]$_io_farmers_ip_arr, [object]$_io_stopwatch
 			$_disk_plots_remaining_arr = $_disk_metrics_arr[0].PlotsRemaining
 
 			
-
-		
+			
+			
 			# Write uptime information to console
 			foreach ($_disk_sector_performance_obj in $_disk_sector_performance_arr)
 			{
@@ -764,6 +764,7 @@ function fWriteDataToConsole ([array]$_io_farmers_ip_arr, [object]$_io_stopwatch
 					if ($_disk_sector_performance_obj.Id -eq "overall") {
 						$_avg_sectors_per_hour = 0.0
 						$_avg_minutes_per_sector = 0.0
+						
 						if ($_disk_sector_performance_obj.TotalSeconds -gt 0) {
 						#if ($_disk_sector_performance_obj.TotalSeconds -and $_disk_sector_performance_obj.TotalSeconds -gt 0) {
 							$_avg_sectors_per_hour = [math]::Round(($_disk_sector_performance_obj.TotalSectors * 3600)/ $_disk_sector_performance_obj.TotalSeconds, 1)
@@ -771,7 +772,9 @@ function fWriteDataToConsole ([array]$_io_farmers_ip_arr, [object]$_io_stopwatch
 						if ($_disk_sector_performance_obj.TotalSectors) {
 							$_avg_minutes_per_sector = [math]::Round($_disk_sector_performance_obj.TotalSeconds / ($_disk_sector_performance_obj.TotalSectors * 60), 1)
 						}
-						
+						Write-Host 
+						$_total_sectors_per_hour = $_avg_sectors_per_hour*$_disk_sector_performance_obj.TotalDisks
+
 						$_uptime = fGetElapsedTime $_disk_sector_performance_obj
 						$_uptime_disp = $_uptime.days.ToString()+"d "+$_uptime.hours.ToString()+"h "+$_uptime.minutes.ToString()+"m "+$_uptime.seconds.ToString()+"s"
 						$_OutputHTML = ""
@@ -798,6 +801,19 @@ function fWriteDataToConsole ([array]$_io_farmers_ip_arr, [object]$_io_stopwatch
 								break
 							}
 						}
+						# OUTPUT HTML FOR TELEGRAM
+						$_OutputHTML += ", <b>$($_uptime_disp)</b> Uptime, "
+						$_OutputHTML += "`n <b>$($_total_sectors_per_hour)</b> Sectors/Hour, "
+						$_OutputHTML += "`n <b>$($_avg_sectors_per_hour)</b> Sectors/Hour (avg/disk), "
+						$_OutputHTML += "`n <b>$($_avg_minutes_per_sector)</b> Minutes/Sector (avg), "
+						$_OutputHTML += "`n <b>$($_disk_sector_performance_obj.TotalRewards)</b> Total Rewards"
+
+
+						$_OutputHTML += ""
+
+						$_allOutput += "$_OutputHTML"
+
+						# FOR PWSH CLI
 						$_Output = ", `n"
 						$_Output += "Uptime: $($_uptime_disp)"
 						$_Output += ", "
@@ -806,18 +822,6 @@ function fWriteDataToConsole ([array]$_io_farmers_ip_arr, [object]$_io_stopwatch
 						$_Output += "Minutes/Sector (avg): $($_avg_minutes_per_sector.ToString())"
 						$_Output += ", "
 						$_Output += "Rewards: $($_disk_sector_performance_obj.TotalRewards.ToString())"
-
-						# Append each line with HTML formatting
-						$_OutputHTML += ", <b>$($_uptime_disp)</b> Uptime, "
-						$_OutputHTML += "`n <b>$($_avg_sectors_per_hour)</b> Sectors/Hour (avg), "
-						$_OutputHTML += "`n <b>$($_avg_minutes_per_sector)</b> Minutes/Sector (avg), "
-						$_OutputHTML += "`n <b>$($_disk_sector_performance_obj.TotalRewards)</b> Total Rewards"
-
-						# Close the HTML pre tag
-						$_OutputHTML += ""
-
-						# Output the HTML string
-						$_allOutput += "$_OutputHTML"
 
 						$_Output
 						# Write-Host $_OutputHTML
