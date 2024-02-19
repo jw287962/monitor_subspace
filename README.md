@@ -52,7 +52,7 @@ To launch save the ps1 and config file in same folder on a local computer, chang
   - Warning/Error messages summary with duplicates removed
 
 
-# FORKED CHANGES:
+**FORKED CHANGES:**
 	- I changed config to use '=' sign between key value pairs so easier and cleaner due to frequent ':' in URL
 	- WEBHOOK is untested adjusted the $_api_host_url variable that relied on ':' rather than '='
 	- send telegram notification on refresh as well 
@@ -60,7 +60,7 @@ To launch save the ps1 and config file in same folder on a local computer, chang
 		 Uptime: , Sectors/Hour (avg): , Minutes/Sector (avg): , Rewards: 
 	
 
-*** Forked Discord ID: jaxeun
+>*** Forked Discord ID: jaxeun
 
 >*** For questions and feedback please contact (rs_00) in subspace discord channel.
 
