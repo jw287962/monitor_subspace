@@ -670,7 +670,7 @@ function fWriteDataToConsole ([array]$_io_farmers_ip_arr, [object]$_io_stopwatch
 					$_node_metrics_raw = $_process_state_arr[0]
 					[void]$_node_metrics_raw_arr.add($_node_metrics_raw)
 					$_node_metrics_formatted_arr = fParseMetricsToObj $_node_metrics_raw_arr[$_node_metrics_raw_arr.Count - 1]
-
+	
 					$_node_metrics_arr = fGetNodeMetrics $_node_metrics_formatted_arr
 					$_node_sync_state = $_node_metrics_arr[0].Sync.State
 					$_node_peers_connected = $_node_metrics_arr[0].Peers.Connected
@@ -733,7 +733,7 @@ function fWriteDataToConsole ([array]$_io_farmers_ip_arr, [object]$_io_stopwatch
 			$_label_diskid = "Disk Id"
 			$_label_size = "Size    "
 			$_label_percent_complete = "% Comp."
-			$_label_eta = "ETA     "
+			$_label_eta = "ETA(Hrs)"
 			$_label_sectors_per_hour = "Sectors/Hr"
 			$_label_minutes_per_sectors = "Min/Sector"
 			$_label_rewards = "Reward"
@@ -981,8 +981,8 @@ function fWriteDataToConsole ([array]$_io_farmers_ip_arr, [object]$_io_stopwatch
 							$_plotting_percent_complete_disp = $_plotting_percent_complete.ToString() + "%"
 						}
 						if ($_minutes_per_sector_data_disp -ne "-") {
-							$_eta = [math]::Round((([double]($_minutes_per_sector_data_disp) * $_reminaing_sectors)) / (60 * 24), 2)
-							$_eta_disp = $_eta.toString() + "Days"
+							$_eta = [math]::Round((([double]($_minutes_per_sector_data_disp) * $_reminaing_sectors)) / (60), 2)
+							$_eta_disp = $_eta.toString()
 						}
 						
 						$_spacer_length = 1
